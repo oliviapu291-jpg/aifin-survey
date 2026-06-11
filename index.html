@@ -1,0 +1,1008 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>用户调研问卷 - AIFin Market</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Inter:wght@400;450;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin></script>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-soft: #F5F5F7;
+      --bg-mute: #F0F0F2;
+      --ink: #1D1D1F;
+      --ink-1: #2D2D2F;
+      --ink-2: #6E6E73;
+      --ink-3: #86868B;
+      --ink-4: #A1A1A6;
+      --line: #E8E8ED;
+      --line-soft: #F0F0F2;
+      --line-strong: #D2D2D7;
+      --accent: #5B8DEF;
+      --accent-hover: #4A7DE0;
+      --accent-soft: rgba(91,141,239,0.08);
+      --accent-tint: rgba(91,141,239,0.16);
+      --success: #30A46C;
+      --danger: #E5484D;
+      --warn: #F59E0B;
+      --font-display: "Inter Tight", -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: "JetBrains Mono", "SF Mono", monospace;
+      --shadow-1: 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-2: 0 4px 12px rgba(0,0,0,0.06);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0; padding: 0;
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--ink);
+      background: var(--bg-soft);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    .card {
+      background: var(--bg);
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-1);
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-4);
+    }
+
+    .h-2 {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      color: var(--ink);
+      margin: 0;
+    }
+
+    .subtle {
+      color: var(--ink-3);
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 24px;
+      border-radius: 10;
+      background: linear-gradient(135deg, #5B8DEF 0%, #7BA3F5 50%, #9BB9FF 100%);
+      color: #fff;
+      border: none;
+      font-family: var(--font-display);
+      font-size: 14;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(91, 141, 239, 0.28);
+      transition: all 0.15s;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #4A7DE0 0%, #6A93E8 50%, #8AABF8 100%);
+    }
+
+    .mono {
+      font-family: var(--font-mono);
+    }
+
+    /* Toast */
+    #toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .toast {
+      padding: 12px 18px;
+      border-radius: 10;
+      background: var(--ink);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      animation: toastIn 0.3s ease;
+      max-width: 320px;
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Language switcher */
+    .lang-switch {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 100;
+      display: flex;
+      gap: 4px;
+      padding: 4px;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 10;
+      box-shadow: var(--shadow-1);
+    }
+
+    .lang-switch button {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      color: var(--ink-3);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .lang-switch button.active {
+      background: var(--ink);
+      color: #fff;
+    }
+
+    @media (max-width: 600px) {
+      .container { padding: 20px 16px 60px; }
+      .h-2 { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <div id="toast-container"></div>
+
+  <script type="text/babel">
+    const { useState, useMemo, useEffect } = React;
+
+    // ─────────────── i18n ───────────────
+    const TX = {
+      en: {
+        surveyTitle: "User Survey",
+        surveySub: "Help us improve AIFin Market — your feedback shapes our roadmap.",
+        surveySubReward: "Complete the survey to receive 2,000 bonus credits.",
+        surveyRewardTitle: "Survey completed",
+        surveyRewardBody: "Thank you for your feedback! 2,000 bonus credits have been added to your account.",
+        surveyAlreadyTitle: "Already submitted",
+        surveyAlreadyBody: "You have already completed this survey. Your 2,000 bonus credits have been credited.",
+        surveyProgress: "Question",
+        surveyOf: "of",
+        surveyNext: "Next",
+        surveyPrev: "Previous",
+        surveySubmit: "Submit",
+        surveyRequired: "Please select an option",
+        surveyOptional: "Optional",
+      },
+      zh: {
+        surveyTitle: "用户调研问卷",
+        surveySub: "帮助我们改进 AIFin Market — 您的反馈将直接影响产品迭代方向。",
+        surveySubReward: "提交问卷即可领取 2,000 积分",
+        surveyRewardTitle: "问卷提交成功",
+        surveyRewardBody: "感谢您的反馈！我们已为您的账户充值 2,000 积分，有效期 30 天。",
+        surveyAlreadyTitle: "已提交过问卷",
+        surveyAlreadyBody: "您已完成过此问卷，2,000 积分已发放至您的账户。",
+        surveyProgress: "第",
+        surveyOf: "题，共",
+        surveyNext: "下一题",
+        surveyPrev: "上一题",
+        surveySubmit: "提交问卷",
+        surveyRequired: "请选择一项",
+        surveyOptional: "选填",
+      },
+    };
+    const tx = (lang, k) => TX[lang][k] || TX.en[k] || k;
+
+    // ─────────────── Toast helper ───────────────
+    function showToast(message) {
+      const container = document.getElementById('toast-container');
+      const el = document.createElement('div');
+      el.className = 'toast';
+      el.textContent = message;
+      container.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateX(20px)';
+        el.style.transition = 'all 0.3s ease';
+        setTimeout(() => el.remove(), 300);
+      }, 2500);
+    }
+
+    const HERO_GRAD = "linear-gradient(135deg, #5B8DEF 0%, #7BA3F5 50%, #9BB9FF 100%)";
+    const HERO_GRAD_HOVER = "linear-gradient(135deg, #4A7DE0 0%, #6A93E8 50%, #8AABF8 100%)";
+
+    // ─────────────── Survey Questions ───────────────
+    const SURVEY_QUESTIONS = [
+      {
+        id: "q1", type: "radio", required: true, section: "s1",
+        text_zh: "您在工作中的主要角色是？", text_en: "What is your primary role at work?",
+        options_zh: ["量化 / 策略研究", "基本面研究（行业/个股）", "基金经理 / 投资决策", "风控 / 合规", "金融科技 / 开发", "个人投资者", "其他"],
+        options_en: ["Quant / Strategy research", "Fundamental research (industry/stock)", "Fund manager / Investment decision", "Risk / Compliance", "Fintech / Development", "Individual investor", "Other"],
+      },
+      {
+        id: "q2", type: "radio", required: true, section: "s1",
+        text_zh: "过去 30 天，您大约使用了多少次 AIFin Market 的服务？",
+        text_en: "In the past 30 days, how many times have you used AIFin Market services?",
+        options_zh: ["1–2 次（试用后未再使用）", "3–10 次", "11–30 次", "30 次以上"],
+        options_en: ["1–2 times (tried but not reused)", "3–10 times", "11–30 times", "30+ times"],
+      },
+      {
+        id: "q3", type: "checkbox", required: true, section: "s2", maxSelect: 9,
+        text_zh: "您主要使用了哪些产品能力？（可多选）",
+        text_en: "Which product capabilities have you primarily used? (Multiple select)",
+        options_zh: ["A股数据查询（个股行情、财务指标）", "基金 / 债券数据", "宏观经济数据", "指数与行业数据", "财报文档与公告检索", "智能分析 Skill（如盈利分析、对比分析）", "Agent 自动化工作流", "全球股票数据", "不太确定，随意试了试"],
+        options_en: ["A-share data (quotes, fundamentals)", "Fund / Bond data", "Macro economic data", "Index & sector data", "Financial reports & announcements", "Smart analysis Skills", "Agent automation workflows", "Global stock data", "Not sure, just tried it out"],
+      },
+      {
+        id: "q4", type: "checkbox-primary", required: true, section: "s2",
+        text_zh: "使用 AIFin Market 之前，您通过哪些方式完成同类工作？（可多选，请标注最主要的方式）",
+        text_en: "Before AIFin Market, how did you accomplish similar tasks? (Select all, mark the primary one)",
+        options_zh: ["直接使用 Wind 终端", "自建脚本 / API 对接", "同事 / 助理手动查询后转发", "其他数据平台（如 Choice、iFinD）", "没有固定方式，按需临时解决"],
+        options_en: ["Directly via Wind Terminal", "Self-built scripts / API integration", "Colleague / assistant manual lookup", "Other data platforms (Choice, iFinD)", "No fixed approach, ad-hoc solutions"],
+      },
+      {
+        id: "q5", type: "matrix", required: true, section: "s2",
+        text_zh: "AIFin Market 相比您最主要的原有方式，在以下方面的提升程度如何？",
+        text_en: "Compared to your primary previous approach, how much has AIFin Market improved in the following areas?",
+        rows_zh: ["获取数据的速度", "数据结果的准确性", "与现有工作流的衔接"],
+        rows_en: ["Data retrieval speed", "Data accuracy", "Workflow integration"],
+        cols_zh: ["明显退步", "略有退步", "差不多", "有所提升", "明显提升"],
+        cols_en: ["Much worse", "Slightly worse", "About the same", "Slightly better", "Much better"],
+        scale: 5,
+      },
+      {
+        id: "q6", type: "checkbox", required: true, section: "s3", maxSelect: 7,
+        shuffle: true, anchorLast: true,
+        text_zh: "在使用过程中，您遇到过以下哪些问题？（可多选）",
+        text_en: "During usage, which of the following issues have you encountered? (Multiple select)",
+        options_zh: ["查询结果不准确 / 返回了错误数据", "AI 理解不了我的问题，需要反复调整提问方式", "响应速度慢，等待时间长", "不清楚该用哪个 Skill / Agent，选择困难", "积分/额度消耗太快，不敢多用", "数据覆盖范围不够（缺少我需要的数据）", "没遇到明显问题"],
+        options_en: ["Query results inaccurate / wrong data", "AI doesn't understand my questions", "Slow response time", "Unclear which Skill / Agent to use", "Credits run out too fast", "Insufficient data coverage", "No significant issues"],
+        mutualExclusive: { anchorIndex: 6, clearOthers: true },
+      },
+      {
+        id: "q6b", type: "radio", required: true, section: "s3", conditional: true,
+        showIf: (ans) => { const q6 = ans.q6; return Array.isArray(q6) && q6.length >= 2 && !q6.includes(6); },
+        dynamicOptionsFrom: "q6",
+        text_zh: "其中对您影响最大的是哪一个？",
+        text_en: "Which one affected you the most?",
+      },
+      {
+        id: "q7", type: "fill-template", required: false, section: "s3", conditional: true,
+        showIf: (ans) => { const q6 = ans.q6; return Array.isArray(q6) && q6.length > 0 && !q6.includes(6); },
+        text_zh: "请补全这句话：",
+        text_en: "Please complete this sentence:",
+        template_zh: ["我想查", "，但结果", ""],
+        template_en: ["I wanted to look up", ", but got", ""],
+        placeholders_zh: ["不超过15字", "不超过15字"],
+        placeholders_en: ["Max 15 chars", "Max 15 chars"],
+        maxLength: 15,
+      },
+      {
+        id: "q8", type: "radio", required: true, section: "branch",
+        text_zh: "以下哪项最符合您当前的使用状态？",
+        text_en: "Which best describes your current usage status?",
+        options_zh: ["还在使用，首次购买的余额还够用", "已用完余额并再次购买过", "还会偶尔使用，但频率明显下降", "基本停止使用了"],
+        options_en: ["Still using, initial credits sufficient", "Used up credits and repurchased", "Occasionally using but frequency dropped", "Basically stopped using"],
+        branchMap: { 0: "s4b", 1: "s4b", 2: "s4a", 3: "s4a" },
+      },
+      {
+        id: "q9a", type: "checkbox", required: true, section: "s4a", maxSelect: 6,
+        shuffle: true,
+        text_zh: "您停止使用的原因有哪些？（可多选）",
+        text_en: "What are the reasons you stopped using? (Multiple select)",
+        options_zh: ["已经拿到了需要的数据，暂时没有新需求", "产品质量没达到预期，不想再花钱", "价格偏贵，不值得持续使用", "操作太复杂，学习成本高", "回到了之前的工具/方式", "忘了 / 没有再想起来"],
+        options_en: ["Got the data needed, no new demand yet", "Product quality didn't meet expectations", "Price is too high for sustained use", "Too complex, high learning curve", "Went back to previous tools/methods", "Forgot / didn't think of it again"],
+      },
+      {
+        id: "q10a", type: "radio", required: true, section: "s4a",
+        shuffle: true, anchorLast: true,
+        text_zh: "如果只能改善一个方面，哪个最可能让您重新使用？",
+        text_en: "If only one aspect could improve, which would most likely bring you back?",
+        options_zh: ["查询结果的准确度和理解能力", "价格或付费方式的灵活度", "可查询的数据范围和覆盖面", "上手引导和功能可见性", "以上都不太可能让我回来"],
+        options_en: ["Query accuracy and AI understanding", "Price or payment flexibility", "Data coverage and scope", "Onboarding and feature visibility", "None of the above would bring me back"],
+      },
+      {
+        id: "q9b", type: "checkbox", required: true, section: "s4b", maxSelect: 3,
+        shuffle: true, anchorLast: true,
+        text_zh: "AIFin Market 哪些自身能力让您愿意持续使用？（最多选 3 项）",
+        text_en: "Which AIFin Market capabilities make you want to keep using it? (Select up to 3)",
+        options_zh: ["不用自己写脚本或维护接口，也能获取金融数据", "覆盖了我常用的数据类型、指标或市场范围", "常用金融任务已经做成 Skill，用起来更省事", "工具 / Skill 的说明比较清楚，容易让 Agent 正确调用", "数据查询过程比较稳定，响应速度可以接受", "按需购买 / 积分消耗方式适合我的使用频率", "其他"],
+        options_en: ["Get financial data without writing scripts", "Covers my commonly used data types", "Common tasks available as Skills", "Clear tool descriptions for Agent", "Stable queries with acceptable speed", "Pay-as-you-go pricing fits my usage", "Other"],
+      },
+      {
+        id: "q10b", type: "checkbox", required: true, section: "s4b", maxSelect: 2,
+        shuffle: true, anchorLast: true,
+        text_zh: "您希望 AIFin Market 下一步优先完善哪些 MCP 工具 / Skill 能力？（最多选 2 项）",
+        text_en: "Which MCP tools / Skills do you want AIFin Market to improve? (Select up to 2)",
+        options_zh: ["覆盖更多可查询的数据类型或指标", "现有工具支持更细的查询参数（如时间区间、频率、筛选条件）", "提供更多高频金融场景 Skill（如个股分析、基金对比、公告检索、行业跟踪）", "工具 / Skill 的名称、说明和适用场景更清晰，方便 Agent 正确调用", "提升工具调用的稳定性和响应速度", "查询失败时返回更明确的错误原因和可调整方向", "积分 / 额度消耗规则更清楚", "其他"],
+        options_en: ["Cover more data types and indicators", "Support finer query parameters", "More Skills for common financial scenarios", "Clearer tool names and descriptions", "Better stability and response speed", "Clearer error messages on failure", "Clearer credit consumption rules", "Other"],
+      },
+      {
+        id: "q11", type: "nps", required: true, section: "s5",
+        text_zh: "您有多大可能向同事或同行推荐 AIFin Market？",
+        text_en: "How likely are you to recommend AIFin Market to colleagues?",
+        minLabel_zh: "完全不可能", minLabel_en: "Not at all likely",
+        maxLabel_zh: "非常愿意推荐", maxLabel_en: "Extremely likely",
+      },
+      {
+        id: "q12", type: "radio", required: true, section: "s5",
+        text_zh: "您对 AIFin Market 当前定价的整体感受是？",
+        text_en: "What is your overall feeling about AIFin Market's pricing?",
+        options_zh: ["很划算，物超所值", "合理，能接受", "偏贵，但特定场景下值得", "太贵了，使用时会犹豫"],
+        options_en: ["Great value for money", "Reasonable, acceptable", "A bit expensive but worth it", "Too expensive, hesitate to use"],
+      },
+      {
+        id: "q13", type: "radio", required: true, section: "s5",
+        text_zh: "如果推出以下付费模式，您最倾向哪种？",
+        text_en: "Which payment model would you prefer?",
+        options_zh: ["按次付费（现有模式，用多少买多少）", "包月套餐（固定额度，超出按次计费）", "按功能订阅（选择需要的模块，按月付费）", "企业年度合约（团队共享额度）"],
+        options_en: ["Pay-per-use (current)", "Monthly plan (fixed quota)", "Feature subscription (monthly)", "Enterprise annual contract"],
+      },
+      {
+        id: "q14", type: "radio", required: true, section: "s5",
+        text_zh: "如果按月持续使用，您每月可接受的预算大约是？",
+        text_en: "If using monthly, what budget would you accept?",
+        options_zh: ["100 元以内", "100–300 元", "300–500 元", "500–1,000 元", "1,000 元以上", "不确定 / 取决于实际效果"],
+        options_en: ["Under 100 CNY", "100–300 CNY", "300–500 CNY", "500–1,000 CNY", "Over 1,000 CNY", "Uncertain / depends on results"],
+      },
+    ];
+
+    // ─────────────── Dynamic Options Component ───────────────
+    function DynamicOptions({ q, answers, lang, setAnswer }) {
+      const sourceQ = SURVEY_QUESTIONS.find(x => x.id === q.dynamicOptionsFrom);
+      if (!sourceQ) return null;
+      const selectedIndices = answers[q.dynamicOptionsFrom] || [];
+      const opts = lang === "zh" ? sourceQ.options_zh : sourceQ.options_en;
+      if (!opts || selectedIndices.length === 0) {
+        return (
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, flex: 1, justifyContent: "center", alignItems: "center", color: "var(--ink-4)", fontSize: 14 }}>
+            {lang === "zh" ? "请先在上题中选择至少两项" : "Please select at least 2 options above"}
+          </div>
+        );
+      }
+      return (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
+          {selectedIndices.map((origIdx, displayIdx) => (
+            <label
+              key={displayIdx}
+              style={{
+                display: "flex", alignItems: "center", gap: 12,
+                padding: "12px 14px", borderRadius: 10, minHeight: 48,
+                border: answers[q.id] === displayIdx ? "2px solid var(--accent)" : "1px solid var(--line)",
+                background: answers[q.id] === displayIdx ? "rgba(91,141,239,0.06)" : "var(--bg)",
+                cursor: "pointer", transition: "all 0.15s",
+              }}
+              onMouseEnter={e => { if (answers[q.id] !== displayIdx) e.currentTarget.style.background = "var(--bg-mute)"; }}
+              onMouseLeave={e => { if (answers[q.id] !== displayIdx) e.currentTarget.style.background = "var(--bg)"; }}
+            >
+              <input
+                type="radio"
+                name={q.id}
+                checked={answers[q.id] === displayIdx}
+                onChange={() => setAnswer(q.id, displayIdx)}
+                style={{ width: 18, height: 18, accentColor: "var(--accent)", cursor: "pointer", flexShrink: 0 }}
+              />
+              <span style={{ fontSize: 14, color: "var(--ink-2)", lineHeight: 1.5 }}>{opts[origIdx]}</span>
+            </label>
+          ))}
+        </div>
+      );
+    }
+
+    // ─────────────── Main Survey Component ───────────────
+    function SurveyApp() {
+      const [lang, setLang] = useState("zh");
+      const [current, setCurrent] = useState(0);
+      const [answers, setAnswers] = useState({});
+      const [submitted, setSubmitted] = useState(false);
+      const [committed, setCommitted] = useState(() => {
+        return localStorage.getItem("faim_survey_committed") === "true";
+      });
+      const [error, setError] = useState(null);
+      const [shuffledIndices, setShuffledIndices] = useState({});
+
+      // Determine visible questions based on answers
+      const visibleQuestions = useMemo(() => {
+        const q8Answer = answers.q8;
+        let branch = null;
+        if (q8Answer !== undefined) {
+          const q = SURVEY_QUESTIONS.find(x => x.id === "q8");
+          branch = q.branchMap[q8Answer];
+        }
+        return SURVEY_QUESTIONS.filter(q => {
+          if (!q.conditional && q.section !== "s4a" && q.section !== "s4b") return true;
+          if (q.conditional && q.showIf) return q.showIf(answers);
+          if (q.section === "s4a") return branch === "s4a";
+          if (q.section === "s4b") return branch === "s4b";
+          return true;
+        });
+      }, [answers]);
+
+      const total = visibleQuestions.length;
+      const q = visibleQuestions[current] || visibleQuestions[visibleQuestions.length - 1];
+
+      // Shuffle options on first render
+      useEffect(() => {
+        const newShuffled = {};
+        SURVEY_QUESTIONS.forEach(q => {
+          if (q.shuffle && q.options_zh) {
+            const count = q.options_zh.length;
+            const indices = Array.from({ length: count }, (_, i) => i);
+            const anchorIndex = q.anchorLast ? count - 1 : -1;
+            const toShuffle = indices.filter(i => i !== anchorIndex);
+            for (let i = toShuffle.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              [toShuffle[i], toShuffle[j]] = [toShuffle[j], toShuffle[i]];
+            }
+            if (anchorIndex >= 0) {
+              newShuffled[q.id] = [...toShuffle, anchorIndex];
+            } else {
+              newShuffled[q.id] = toShuffle;
+            }
+          }
+        });
+        setShuffledIndices(newShuffled);
+      }, []);
+
+      const getShuffledOptions = (q) => {
+        const opts = lang === "zh" ? q.options_zh : q.options_en;
+        if (!q.shuffle || !shuffledIndices[q.id]) return opts;
+        return shuffledIndices[q.id].map(i => opts[i]);
+      };
+
+      const getShuffledIndex = (q, displayIdx) => {
+        if (!q.shuffle || !shuffledIndices[q.id]) return displayIdx;
+        return shuffledIndices[q.id][displayIdx];
+      };
+
+      const getText = (q, field) => {
+        const key = field + "_" + lang;
+        return q[key] || q[field + "_zh"] || q[field + "_en"] || "";
+      };
+
+      const setAnswer = (qid, val) => {
+        setAnswers(prev => ({ ...prev, [qid]: val }));
+        setError(null);
+      };
+
+      const canProceed = () => {
+        if (!q) return true;
+        if (!q.required) return true;
+        const ans = answers[q.id];
+        if (q.type === "radio" || q.type === "nps") return ans !== undefined && ans !== null;
+        if (q.type === "checkbox" || q.type === "checkbox-primary") {
+          return Array.isArray(ans) && ans.length > 0;
+        }
+        if (q.type === "matrix") {
+          if (!ans || typeof ans !== "object") return false;
+          const rows = lang === "zh" ? q.rows_zh : q.rows_en;
+          return rows.every((_, i) => ans[i] !== undefined);
+        }
+        if (q.type === "fill-template") return true;
+        return true;
+      };
+
+      const handleNext = () => {
+        if (!canProceed()) {
+          setError(tx(lang, "surveyRequired"));
+          return;
+        }
+        if (current < total - 1) {
+          setCurrent(current + 1);
+          setError(null);
+        }
+      };
+
+      const handlePrev = () => {
+        if (current > 0) {
+          setCurrent(current - 1);
+          setError(null);
+        }
+      };
+
+      const handleSubmit = () => {
+        if (!canProceed()) {
+          setError(tx(lang, "surveyRequired"));
+          return;
+        }
+        setTimeout(() => {
+          localStorage.setItem("faim_survey_committed", "true");
+          localStorage.setItem("faim_survey_answers", JSON.stringify(answers));
+          setCommitted(true);
+          setSubmitted(true);
+          showToast(lang === "zh" ? "问卷提交成功！+2000 积分" : "Survey submitted! +2,000 credits");
+        }, 600);
+      };
+
+      useEffect(() => {
+        setCurrent(prev => {
+          if (prev >= total) return Math.max(0, total - 1);
+          return prev;
+        });
+      }, [total]);
+
+      // Already submitted state
+      if (committed) {
+        return (
+          <div className="container fade-in">
+            <div className="lang-switch">
+              <button className={lang === "zh" ? "active" : ""} onClick={() => setLang("zh")}>中文</button>
+              <button className={lang === "en" ? "active" : ""} onClick={() => setLang("en")}>EN</button>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 24, maxWidth: 640, margin: "0 auto" }}>
+              <div>
+                <h2 className="h-2" style={{ marginBottom: 8 }}>{tx(lang, "surveyTitle")}</h2>
+                <p className="subtle" style={{ fontSize: 15, lineHeight: 1.55, margin: 0 }}>{tx(lang, "surveySub")}</p>
+              </div>
+              <div className="card" style={{ padding: 40, textAlign: "center" }}>
+                <div style={{ display: "flex", justifyContent: "center", marginBottom: 20 }}>
+                  <div style={{
+                    width: 64, height: 64, borderRadius: 999,
+                    background: "rgba(48,164,108,0.10)", color: "var(--success)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                  }}>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                  </div>
+                </div>
+                <div style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 600, color: "var(--ink)", marginBottom: 10 }}>
+                  {tx(lang, "surveyAlreadyTitle")}
+                </div>
+                <div style={{ fontSize: 14, color: "var(--ink-3)", lineHeight: 1.7 }}>
+                  {tx(lang, "surveyAlreadyBody")}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // Just submitted state
+      if (submitted) {
+        return (
+          <div className="container fade-in">
+            <div className="lang-switch">
+              <button className={lang === "zh" ? "active" : ""} onClick={() => setLang("zh")}>中文</button>
+              <button className={lang === "en" ? "active" : ""} onClick={() => setLang("en")}>EN</button>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 24, maxWidth: 640, margin: "0 auto" }}>
+              <div>
+                <h2 className="h-2" style={{ marginBottom: 8 }}>{tx(lang, "surveyTitle")}</h2>
+                <p className="subtle" style={{ fontSize: 15, lineHeight: 1.55, margin: 0 }}>{tx(lang, "surveySub")}</p>
+              </div>
+              <div className="card" style={{ padding: 40, textAlign: "center" }}>
+                <div style={{ display: "flex", justifyContent: "center", marginBottom: 20 }}>
+                  <div style={{
+                    width: 64, height: 64, borderRadius: 999,
+                    background: "rgba(91,141,239,0.10)", color: "var(--accent)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                  }}>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                  </div>
+                </div>
+                <div style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 600, color: "var(--ink)", marginBottom: 10 }}>
+                  {tx(lang, "surveyRewardTitle")}
+                </div>
+                <div style={{ fontSize: 14, color: "var(--ink-3)", lineHeight: 1.7 }}>
+                  {tx(lang, "surveyRewardBody")}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // Active survey
+      return (
+        <div className="container fade-in">
+          <div className="lang-switch">
+            <button className={lang === "zh" ? "active" : ""} onClick={() => setLang("zh")}>中文</button>
+            <button className={lang === "en" ? "active" : ""} onClick={() => setLang("en")}>EN</button>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 24, maxWidth: 720, margin: "0 auto" }}>
+            <div>
+              <h2 className="h-2" style={{ marginBottom: 8 }}>{tx(lang, "surveyTitle")}</h2>
+              <p style={{ fontSize: 15, lineHeight: 1.55, margin: 0, color: "var(--ink-3)" }}>
+                {tx(lang, "surveySub")}
+                <span style={{ color: "var(--accent)", fontWeight: 600 }}> {tx(lang, "surveySubReward")}</span>
+              </p>
+            </div>
+
+            <div className="card" style={{ padding: 28, display: "flex", flexDirection: "column", minHeight: 520 }}>
+              {/* Progress bar */}
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+                  <span style={{ fontSize: 13, color: "var(--ink-3)", fontWeight: 500 }}>
+                    {tx(lang, "surveyProgress")} {current + 1}{tx(lang, "surveyOf")} {total}
+                  </span>
+                  <span style={{ fontSize: 12, color: "var(--ink-4)" }}>{Math.round(((current + 1) / total) * 100)}%</span>
+                </div>
+                <div style={{ height: 6, borderRadius: 999, background: "var(--bg-mute)", overflow: "hidden" }}>
+                  <div style={{
+                    height: "100%", borderRadius: 999,
+                    width: `${((current + 1) / total) * 100}%`,
+                    background: HERO_GRAD,
+                    transition: "width 0.3s ease",
+                  }} />
+                </div>
+              </div>
+
+              {/* Question */}
+              <div style={{ marginBottom: 24, flex: 1, display: "flex", flexDirection: "column" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+                  <span style={{
+                    display: "inline-flex", alignItems: "center", justifyContent: "center",
+                    width: 26, height: 26, borderRadius: 999,
+                    background: "var(--ink)", color: "#fff",
+                    fontSize: 12, fontWeight: 700, flexShrink: 0,
+                  }}>{current + 1}</span>
+                  <span style={{ fontSize: 16, fontWeight: 600, color: "var(--ink)", lineHeight: 1.5 }}>{getText(q, "text")}</span>
+                  {!q.required && <span style={{ fontSize: 11, color: "var(--ink-4)", marginLeft: "auto", flexShrink: 0 }}>{tx(lang, "surveyOptional")}</span>}
+                </div>
+
+                {/* Radio options */}
+                {q.type === "radio" && !q.dynamicOptionsFrom && (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
+                    {getShuffledOptions(q).map((opt, displayIdx) => {
+                      const origIdx = getShuffledIndex(q, displayIdx);
+                      return (
+                        <label
+                          key={displayIdx}
+                          style={{
+                            display: "flex", alignItems: "center", gap: 12,
+                            padding: "12px 14px", borderRadius: 10, minHeight: 48,
+                            border: answers[q.id] === origIdx ? "2px solid var(--accent)" : "1px solid var(--line)",
+                            background: answers[q.id] === origIdx ? "rgba(91,141,239,0.06)" : "var(--bg)",
+                            cursor: "pointer", transition: "all 0.15s",
+                          }}
+                          onMouseEnter={e => { if (answers[q.id] !== origIdx) e.currentTarget.style.background = "var(--bg-mute)"; }}
+                          onMouseLeave={e => { if (answers[q.id] !== origIdx) e.currentTarget.style.background = "var(--bg)"; }}
+                        >
+                          <input
+                            type="radio"
+                            name={q.id}
+                            checked={answers[q.id] === origIdx}
+                            onChange={() => setAnswer(q.id, origIdx)}
+                            style={{ width: 18, height: 18, accentColor: "var(--accent)", cursor: "pointer", flexShrink: 0 }}
+                          />
+                          <span style={{ fontSize: 14, color: "var(--ink-2)", lineHeight: 1.5 }}>{opt}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Checkbox options */}
+                {q.type === "checkbox" && (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
+                    {getShuffledOptions(q).map((opt, displayIdx) => {
+                      const origIdx = getShuffledIndex(q, displayIdx);
+                      const selected = (answers[q.id] || []).includes(origIdx);
+                      const isAnchor = q.anchorLast && displayIdx === getShuffledOptions(q).length - 1;
+                      return (
+                        <label
+                          key={displayIdx}
+                          style={{
+                            display: "flex", alignItems: "center", gap: 12,
+                            padding: "12px 14px", borderRadius: 10, minHeight: 48,
+                            border: selected ? "2px solid var(--accent)" : "1px solid var(--line)",
+                            background: selected ? "rgba(91,141,239,0.06)" : "var(--bg)",
+                            cursor: "pointer", transition: "all 0.15s",
+                          }}
+                          onMouseEnter={e => { if (!selected) e.currentTarget.style.background = "var(--bg-mute)"; }}
+                          onMouseLeave={e => { if (!selected) e.currentTarget.style.background = "var(--bg)"; }}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={selected}
+                            onChange={() => {
+                              const curr = answers[q.id] || [];
+                              if (isAnchor && q.mutualExclusive && q.mutualExclusive.anchorIndex === origIdx) {
+                                if (curr.includes(origIdx)) {
+                                  setAnswer(q.id, []);
+                                } else {
+                                  setAnswer(q.id, [origIdx]);
+                                }
+                                return;
+                              }
+                              if (q.mutualExclusive && curr.includes(q.mutualExclusive.anchorIndex)) {
+                                setAnswer(q.id, [origIdx]);
+                                return;
+                              }
+                              if (curr.includes(origIdx)) {
+                                setAnswer(q.id, curr.filter(i => i !== origIdx));
+                              } else {
+                                const max = q.maxSelect || 99;
+                                if (curr.length >= max) return;
+                                setAnswer(q.id, [...curr, origIdx]);
+                              }
+                            }}
+                            style={{ width: 18, height: 18, accentColor: "var(--accent)", cursor: "pointer", flexShrink: 0 }}
+                          />
+                          <span style={{ fontSize: 14, color: "var(--ink-2)", lineHeight: 1.5 }}>{opt}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Checkbox + Primary */}
+                {q.type === "checkbox-primary" && (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
+                    {(lang === "zh" ? q.options_zh : q.options_en).map((opt, idx) => {
+                      const selected = (answers[q.id] || []).includes(idx);
+                      const isPrimary = (answers[q.id + "_primary"] === idx);
+                      return (
+                        <div
+                          key={idx}
+                          style={{
+                            display: "flex", alignItems: "center", gap: 10,
+                            padding: "10px 14px", borderRadius: 10, minHeight: 48,
+                            border: selected ? "2px solid var(--accent)" : "1px solid var(--line)",
+                            background: selected ? "rgba(91,141,239,0.06)" : "var(--bg)",
+                            cursor: "pointer", transition: "all 0.15s",
+                          }}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={selected}
+                            onChange={() => {
+                              const curr = answers[q.id] || [];
+                              if (curr.includes(idx)) {
+                                const next = curr.filter(i => i !== idx);
+                                setAnswer(q.id, next);
+                                if (answers[q.id + "_primary"] === idx) {
+                                  setAnswer(q.id + "_primary", undefined);
+                                }
+                              } else {
+                                setAnswer(q.id, [...curr, idx]);
+                              }
+                            }}
+                            style={{ width: 18, height: 18, accentColor: "var(--accent)", cursor: "pointer", flexShrink: 0 }}
+                          />
+                          <span style={{ flex: 1, fontSize: 14, color: "var(--ink-2)", lineHeight: 1.5 }}>{opt}</span>
+                          {selected && (
+                            <button
+                              onClick={(e) => { e.stopPropagation(); setAnswer(q.id + "_primary", isPrimary ? undefined : idx); }}
+                              style={{
+                                padding: "3px 10px", borderRadius: 999, fontSize: 11, fontWeight: 600,
+                                border: isPrimary ? "none" : "1px solid var(--line-strong)",
+                                background: isPrimary ? "var(--accent)" : "var(--bg-soft)",
+                                color: isPrimary ? "#fff" : "var(--ink-3)",
+                                cursor: "pointer", flexShrink: 0,
+                              }}
+                            >
+                              {isPrimary ? "★ " + (lang === "zh" ? "主要" : "Primary") : (lang === "zh" ? "标为主要" : "Mark primary")}
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })}
+                    {answers[q.id + "_primary"] !== undefined && (
+                      <div style={{ marginTop: 8, padding: "8px 12px", borderRadius: 8, background: "rgba(91,141,239,0.06)", border: "1px solid rgba(91,141,239,0.15)", fontSize: 13, color: "var(--accent)" }}>
+                        {lang === "zh" ? "最主要的方式：" : "Primary method: "}
+                        <strong>{(lang === "zh" ? q.options_zh : q.options_en)[answers[q.id + "_primary"]]}</strong>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Matrix */}
+                {q.type === "matrix" && (
+                  <div style={{ overflowX: "auto", flex: 1 }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minHeight: 200 }}>
+                      <thead>
+                        <tr style={{ background: "var(--bg-soft)" }}>
+                          <th style={{ padding: "10px 12px", textAlign: "left", fontWeight: 600, color: "var(--ink-3)", fontSize: 12, borderBottom: "1px solid var(--line)" }}></th>
+                          {(lang === "zh" ? q.cols_zh : q.cols_en).map((col, i) => (
+                            <th key={i} style={{ padding: "10px 8px", textAlign: "center", fontWeight: 600, color: "var(--ink-3)", fontSize: 11, borderBottom: "1px solid var(--line)", minWidth: 70 }}>{col}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {(lang === "zh" ? q.rows_zh : q.rows_en).map((row, ri) => (
+                          <tr key={ri} style={{ borderBottom: "1px solid var(--line-soft)" }}>
+                            <td style={{ padding: "12px", fontWeight: 500, color: "var(--ink-2)", whiteSpace: "nowrap" }}>{row}</td>
+                            {Array.from({ length: q.scale }, (_, ci) => (
+                              <td key={ci} style={{ padding: "8px", textAlign: "center" }}>
+                                <input
+                                  type="radio"
+                                  name={`${q.id}-row-${ri}`}
+                                  checked={(answers[q.id] || {})[ri] === ci}
+                                  onChange={() => {
+                                    const curr = answers[q.id] || {};
+                                    setAnswer(q.id, { ...curr, [ri]: ci });
+                                  }}
+                                  style={{ width: 18, height: 18, accentColor: "var(--accent)", cursor: "pointer" }}
+                                />
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {/* NPS */}
+                {q.type === "nps" && (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 16, flex: 1 }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, flexWrap: "wrap" }}>
+                      {Array.from({ length: 11 }, (_, i) => (
+                        <button
+                          key={i}
+                          onClick={() => setAnswer(q.id, i)}
+                          style={{
+                            width: 40, height: 40, borderRadius: 10,
+                            border: answers[q.id] === i ? "2px solid var(--accent)" : "1px solid var(--line)",
+                            background: answers[q.id] === i ? "rgba(91,141,239,0.10)" : "var(--bg)",
+                            color: answers[q.id] === i ? "var(--accent)" : "var(--ink-2)",
+                            fontSize: 14, fontWeight: 600, cursor: "pointer",
+                            transition: "all 0.15s",
+                          }}
+                          onMouseEnter={e => { if (answers[q.id] !== i) e.currentTarget.style.background = "var(--bg-mute)"; }}
+                          onMouseLeave={e => { if (answers[q.id] !== i) e.currentTarget.style.background = "var(--bg)"; }}
+                        >
+                          {i}
+                        </button>
+                      ))}
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "var(--ink-4)", padding: "0 4px" }}>
+                      <span>{getText(q, "minLabel")}</span>
+                      <span>{getText(q, "maxLabel")}</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Fill template */}
+                {q.type === "fill-template" && (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 12, flex: 1 }}>
+                    <div style={{
+                      padding: "16px 20px", borderRadius: 12, background: "var(--bg-soft)",
+                      border: "1px solid var(--line)", fontSize: 15, lineHeight: 2, color: "var(--ink-2)",
+                    }}>
+                      {(lang === "zh" ? q.template_zh : q.template_en).map((part, i) => (
+                        <span key={i}>
+                          {part}
+                          {i < (lang === "zh" ? q.template_zh : q.template_en).length - 1 && (
+                            <input
+                              type="text"
+                              value={(answers[q.id] || [])[i] || ""}
+                              onChange={e => {
+                                const curr = answers[q.id] || [];
+                                const next = [...curr];
+                                next[i] = e.target.value.slice(0, q.maxLength);
+                                setAnswer(q.id, next);
+                              }}
+                              placeholder={(lang === "zh" ? q.placeholders_zh : q.placeholders_en)[i]}
+                              style={{
+                                width: 120, padding: "4px 8px", borderRadius: 6,
+                                border: "1px solid var(--line-strong)", fontFamily: "inherit",
+                                fontSize: 14, color: "var(--ink)", background: "var(--bg)",
+                                outline: "none", textAlign: "center",
+                              }}
+                            />
+                          )}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Dynamic options */}
+                {q.type === "radio" && q.dynamicOptionsFrom && (
+                  <DynamicOptions q={q} answers={answers} lang={lang} setAnswer={setAnswer} />
+                )}
+
+                {/* Error message */}
+                {error && (
+                  <div style={{
+                    marginTop: 12, padding: "10px 14px", borderRadius: 8,
+                    background: "rgba(229,72,77,0.08)", border: "1px solid rgba(229,72,77,0.2)",
+                    color: "var(--danger)", fontSize: 13, display: "flex", alignItems: "center", gap: 8,
+                  }}>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.4"/><path d="M8 5v3M8 10.5v.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg>
+                    {error}
+                  </div>
+                )}
+              </div>
+
+              {/* Navigation buttons */}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+                <button
+                  onClick={handlePrev}
+                  disabled={current === 0}
+                  style={{
+                    padding: "10px 20px", borderRadius: 10,
+                    background: current === 0 ? "var(--bg-mute)" : "var(--bg)",
+                    color: current === 0 ? "var(--ink-4)" : "var(--ink-2)",
+                    border: "1px solid var(--line-strong)", fontSize: 14, fontWeight: 500,
+                    cursor: current === 0 ? "not-allowed" : "pointer",
+                  }}
+                  onMouseEnter={e => { if (current !== 0) e.currentTarget.style.background = "var(--bg-mute)"; }}
+                  onMouseLeave={e => { if (current !== 0) e.currentTarget.style.background = "var(--bg)"; }}
+                >
+                  {tx(lang, "surveyPrev")}
+                </button>
+
+                {current === total - 1 ? (
+                  <button
+                    onClick={handleSubmit}
+                    style={{
+                      padding: "10px 28px", borderRadius: 10,
+                      background: HERO_GRAD, color: "#fff", border: "none",
+                      fontSize: 14, fontWeight: 600, cursor: "pointer",
+                      boxShadow: "0 4px 12px rgba(91, 141, 239, 0.28)",
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.background = HERO_GRAD_HOVER}
+                    onMouseLeave={e => e.currentTarget.style.background = HERO_GRAD}
+                  >
+                    {tx(lang, "surveySubmit")}
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleNext}
+                    style={{
+                      padding: "10px 28px", borderRadius: 10,
+                      background: "var(--ink)", color: "#fff", border: "none",
+                      fontSize: 14, fontWeight: 600, cursor: "pointer",
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.background = "var(--ink-2)"}
+                    onMouseLeave={e => e.currentTarget.style.background = "var(--ink)"}
+                  >
+                    {tx(lang, "surveyNext")}
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<SurveyApp />);
+  </script>
+</body>
+</html>
