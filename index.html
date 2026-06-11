@@ -308,18 +308,16 @@
       {
         id: "q7", type: "fill-template", required: false, section: "s3", conditional: true,
         showIf: (ans) => { const q6 = ans.q6; return Array.isArray(q6) && q6.length > 0 && !q6.includes(6); },
-        text_zh: "请补全这句话：",
-        text_en: "Please complete this sentence:",
+        text_zh: "请回忆一次不理想的查询：",
+        text_en: "Please recall one query that did not work well:",
         template_zh: ["我想查", "，但结果", ""],
         template_en: ["I wanted to look up", ", but got", ""],
-        placeholders_zh: ["（具体的某类数据）", "（填写Agent返回给你的结果），填写不超过15字"],
+        placeholders_zh: ["（某个数据、指标或问题）", "（不准确 / 不完整 / 没返回数据 / …）"],
         placeholders_en: ["Max 15 chars", "Max 15 chars"],
         maxLength: 15,
       },
       {
         id: "q8", type: "radio", required: true, section: "branch",
-        text_zh: "以下哪项最符合您当前的使用状态？",
-        text_en: "Which best describes your current usage status?",
         options_zh: ["还在使用，首次购买的余额还够用", "已用完余额并再次购买过", "还会偶尔使用，但频率明显下降", "基本停止使用了"],
         options_en: ["Still using, initial credits sufficient", "Used up credits and repurchased", "Occasionally using but frequency dropped", "Basically stopped using"],
         branchMap: { 0: "s4b", 1: "s4b", 2: "s4a", 3: "s4a" },
@@ -899,6 +897,7 @@
                   </div>
                 )}
 
+                {/* Template with Select (Q7) */}
                 {/* Fill template */}
                 {q.type === "fill-template" && (
                   <div style={{ display: "flex", flexDirection: "column", gap: 12, flex: 1 }}>
@@ -921,10 +920,10 @@
                               }}
                               placeholder={(lang === "zh" ? q.placeholders_zh : q.placeholders_en)[i]}
                               style={{
-                                width: 120, padding: "4px 8px", borderRadius: 6,
+                                width: "auto", minWidth: 320, padding: "4px 8px", borderRadius: 6,
                                 border: "1px solid var(--line-strong)", fontFamily: "inherit",
                                 fontSize: 14, color: "var(--ink)", background: "var(--bg)",
-                                outline: "none", textAlign: "center",
+                                outline: "none", textAlign: "center", margin: "0 4px",
                               }}
                             />
                           )}
@@ -933,8 +932,6 @@
                     </div>
                   </div>
                 )}
-
-                {/* Dynamic options */}
                 {q.type === "radio" && q.dynamicOptionsFrom && (
                   <DynamicOptions q={q} answers={answers} lang={lang} setAnswer={setAnswer} />
                 )}
