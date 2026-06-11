@@ -312,7 +312,7 @@
         text_en: "Please complete this sentence:",
         template_zh: ["我想查", "，但结果", ""],
         template_en: ["I wanted to look up", ", but got", ""],
-        placeholders_zh: ["不超过15字", "不超过15字"],
+        placeholders_zh: ["（具体的某类数据）", "（填写Agent返回给你的结果），填写不超过15字"],
         placeholders_en: ["Max 15 chars", "Max 15 chars"],
         maxLength: 15,
       },
@@ -435,6 +435,9 @@
       const [answers, setAnswers] = useState({});
       const [submitted, setSubmitted] = useState(false);
       const [committed, setCommitted] = useState(() => {
+        // DEV MODE: Set to false to always show fresh survey (bypass cache)
+        const DEV_MODE = true;
+        if (DEV_MODE) return false;
         return localStorage.getItem("faim_survey_committed") === "true";
       });
       const [error, setError] = useState(null);
